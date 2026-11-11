@@ -1033,12 +1033,8 @@ def tailnet_gateway_url(ttl: float = 60.0) -> dict:
             self_node = (json.loads(txt).get("Self") or {}) if done.returncode == 0 else {}
             fqdn = str(self_node.get("DNSName") or "").strip().rstrip(".")
             if fqdn:
-                # minimal-input law (owner 2026-11-11, fresh-person test): the
-                # pair host the pane shows drops the trailing '.ts.net' — the
-                # MagicDNS-relative form (device.tailnet) resolves inside the
-                # tailnet and is what belongs on the watch's keyboard.
                 out = {"gateway_url": f"http://{fqdn.lower()}:8642",
-                       "host": fqdn.lower().removesuffix(".ts.net")}
+                       "host": fqdn.lower()}
             else:
                 out = {"reason": "not-logged-in"}
         except (OSError, ValueError, subprocess.SubprocessError):

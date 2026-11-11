@@ -168,18 +168,6 @@ def enable(body: dict):
     profile = str(body.get("agent") or body.get("profile", "")).strip().lower()
     if not profile:
         return {"error": "agent is required (no silent all-profiles default)"}
-    if not bool(body.get("enable", True)) and profile == _launch_profile():
-        # OWNER RULING 2026-11-11 (v0.3.3, supersedes the v0.3.2 refusal): the
-        # checkbox means WATCH PRESENCE, not "kill the plugin". Unchecking the
-        # host's own box revokes its grant — the agent leaves the watch — while
-        # Wear Kit keeps running here to host this pane and the watch lane. The
-        # full off-switch is the Plugins page toggle (or the CLI); it stays
-        # honest because THAT control names what it does.
-        _p()._engine().set_grant(profile, False)
-        _p().refresh_inventory_row(profile)
-        return {"name": profile, "ok": True, "verb": "enable",
-                "detail": "removed from the watch — Wear Kit still runs here (hosts this pane); "
-                          "full disable lives on the Plugins page"}
     res = _p().delegate_enablement(profile, bool(body.get("enable", True)))
     if res.get("ok"):
         # owner ruling 2026-11-10: enabling IS the whole decision — the grant
